@@ -44,11 +44,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 从localStorage加载答案
 function loadAnswersFromStorage() {
-    const saved = localStorage.getItem('assessment_progress');
+    // 优先从最终提交的数据读取
+    let saved = localStorage.getItem('assessment_final');
     if (saved) {
         const data = JSON.parse(saved);
+        console.log('从assessment_final加载数据:', data);
         return data.answers || {};
     }
+    
+    // 如果没有，尝试从进度数据读取（用户可能直接访问报告页）
+    saved = localStorage.getItem('assessment_progress');
+    if (saved) {
+        const data = JSON.parse(saved);
+        console.log('从assessment_progress加载数据:', data);
+        return data.answers || {};
+    }
+    
+    console.error('未找到任何测评数据');
     return {};
 }
 

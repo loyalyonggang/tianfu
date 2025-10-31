@@ -378,7 +378,15 @@ function submitAssessment() {
         return;
     }
     
-    // 清除保存的进度
+    // 保存最终答案到另一个key（用于报告页面读取）
+    const finalData = {
+        answers: answers,
+        submittedAt: new Date().toISOString(),
+        reportId: 'R' + Date.now().toString().slice(-8)
+    };
+    localStorage.setItem('assessment_final', JSON.stringify(finalData));
+    
+    // 清除进度数据（已完成，不需要继续）
     clearProgress();
     
     // 显示加载页面
