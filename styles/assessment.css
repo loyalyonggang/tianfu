@@ -139,19 +139,23 @@
     font-weight: bold;
 }
 
-/* 问题页面 */
+/* 测评问题页 */
 .assessment-questions {
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     padding: 80px 20px 40px;
 }
 
-.question-container {
-    max-width: 900px;
+.assessment-layout {
+    max-width: 1400px;
     margin: 0 auto;
-    width: 100%;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.question-main {
+    flex: 1;
+    min-width: 0;
 }
 
 .question-card {
@@ -278,6 +282,127 @@
 .btn-outline:hover {
     background: #667eea;
     color: white;
+}
+
+.btn-warning {
+    background: #ff9800;
+    color: white;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: #f57c00;
+}
+
+/* 右侧状态栏 */
+.question-status-sidebar {
+    width: 280px;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.sidebar-header h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.progress-stats {
+    font-size: 24px;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.progress-stats span {
+    color: #667eea;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.status-item {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+}
+
+.status-item.unanswered {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.status-item.answered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-item.current {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.status-item:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.sidebar-legend {
+    padding-top: 15px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: #666;
+}
+
+.legend-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.legend-dot.answered {
+    background: #e8f5e9;
+    border: 2px solid #2e7d32;
+}
+
+.legend-dot.unanswered {
+    background: #ffebee;
+    border: 2px solid #c62828;
+}
+
+.legend-dot.current {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* 继续测评提示 */
@@ -584,6 +709,23 @@
     .modal-buttons .btn {
         max-width: 100%;
         width: 100%;
+    }
+
+    /* 移动端隐藏状态栏 */
+    .assessment-layout {
+        flex-direction: column;
+    }
+
+    .question-status-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        max-height: none;
+        margin-bottom: 20px;
+    }
+
+    .status-grid {
+        grid-template-columns: repeat(9, 1fr);
     }
 }
 

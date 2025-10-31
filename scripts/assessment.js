@@ -94,7 +94,62 @@ function clearProgress() {
 function startAssessment() {
     document.getElementById('introPage').style.display = 'none';
     document.getElementById('questionsPage').style.display = 'block';
+    initStatusSidebar();
     showQuestion(0);
+}
+
+// 初始化状态栏
+function initStatusSidebar() {
+    const statusGrid = document.getElementById('statusGrid');
+    const totalCount = document.getElementById('totalCount');
+    
+    totalCount.textContent = questions.length;
+    
+    let html = '';
+    questions.forEach((q, index) => {
+        html += `<div class="status-item unanswered" id="status-${index}" onclick="jumpToQuestion(${index})" title="第${index + 1}题">
+            ${index + 1}
+        </div>`;
+    });
+    
+    statusGrid.innerHTML = html;
+    updateStatusSidebar();
+}
+
+// 更新状态栏
+function updateStatusSidebar() {
+    const answeredCount = document.getElementById('answeredCount');
+    let count = 0;
+    
+    questions.forEach((q, index) => {
+        const statusItem = document.getElementById(`status-${index}`);
+        const answer = answers[q.id];
+        const hasAnswer = answer !== undefined && answer !== null && 
+                         (typeof answer !== 'string' || answer.trim() !== '');
+        
+        // 移除所有状态类
+        statusItem.classList.remove('answered', 'unanswered', 'current');
+        
+        // 添加当前状态
+        if (index === currentQuestion) {
+            statusItem.classList.add('current');
+        } else if (hasAnswer) {
+            statusItem.classList.add('answered');
+            count++;
+        } else {
+            statusItem.classList.add('unanswered');
+        }
+    });
+    
+    answeredCount.textContent = count;
+    
+    // 更新"跳到下一个未答题"按钮的显示
+    updateNextUnansweredButton();
+}
+
+// 跳转到指定题目
+function jumpToQuestion(index) {
+    showQuestion(index);
 }
 
 // 继续测评
@@ -102,6 +157,7 @@ function continueAssessment() {
     if (loadProgress()) {
         document.getElementById('introPage').style.display = 'none';
         document.getElementById('questionsPage').style.display = 'block';
+        initStatusSidebar();
         showQuestion(currentQuestion);
     } else {
         startAssessment();
@@ -166,6 +222,9 @@ function showQuestion(index) {
     // 更新进度
     updateProgress();
     
+    // 更新状态栏
+    updateStatusSidebar();
+    
     // 更新按钮显示
     document.getElementById('prevBtn').style.display = index > 0 ? 'inline-flex' : 'none';
     document.getElementById('nextBtn').style.display = index < questions.length - 1 ? 'inline-flex' : 'none';
@@ -184,9 +243,15 @@ function selectOption(questionId, value) {
     });
     event.target.closest('.option-button').classList.add('selected');
     
-    // 自动跳转到下一题
+    // 更新状态栏
+    updateStatusSidebar();
+    
+    // 自动跳转到下一题或下一个未答题
     setTimeout(() => {
-        if (currentQuestion < questions.length - 1) {
+        const nextUnanswered = findNextUnanswered(currentQuestion);
+        if (nextUnanswered !== -1) {
+            showQuestion(nextUnanswered);
+        } else if (currentQuestion < questions.length - 1) {
             nextQuestion();
         }
     }, 300);
@@ -204,9 +269,15 @@ function selectChoice(questionId, value) {
     });
     event.target.closest('.option-button').classList.add('selected');
     
-    // 自动跳转到下一题
+    // 更新状态栏
+    updateStatusSidebar();
+    
+    // 自动跳转到下一题或下一个未答题
     setTimeout(() => {
-        if (currentQuestion < questions.length - 1) {
+        const nextUnanswered = findNextUnanswered(currentQuestion);
+        if (nextUnanswered !== -1) {
+            showQuestion(nextUnanswered);
+        } else if (currentQuestion < questions.length - 1) {
             nextQuestion();
         }
     }, 300);
@@ -216,6 +287,7 @@ function selectChoice(questionId, value) {
 function saveTextAnswer(questionId, value) {
     answers[questionId] = value;
     saveProgress(); // 自动保存进度
+    updateStatusSidebar(); // 更新状态栏
 }
 
 // 下一题
@@ -237,6 +309,56 @@ function updateProgress() {
     const progress = ((currentQuestion + 1) / questions.length) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
     document.getElementById('progressText').textContent = Math.round(progress) + '%';
+}
+
+// 查找下一个未回答的题目
+function findNextUnanswered(startIndex) {
+    for (let i = startIndex + 1; i < questions.length; i++) {
+        const q = questions[i];
+        const answer = answers[q.id];
+        const hasAnswer = answer !== undefined && answer !== null && 
+                         (typeof answer !== 'string' || answer.trim() !== '');
+        if (!hasAnswer) {
+            return i;
+        }
+    }
+    return -1; // 没有未答题
+}
+
+// 跳转到下一个未答题
+function goToNextUnanswered() {
+    const nextUnanswered = findNextUnanswered(currentQuestion);
+    if (nextUnanswered !== -1) {
+        showQuestion(nextUnanswered);
+    } else {
+        // 从头开始找
+        const firstUnanswered = findNextUnanswered(-1);
+        if (firstUnanswered !== -1) {
+            showQuestion(firstUnanswered);
+        } else {
+            alert('所有题目都已回答！');
+        }
+    }
+}
+
+// 更新"跳到下一个未答题"按钮
+function updateNextUnansweredButton() {
+    const nextUnansweredBtn = document.getElementById('nextUnansweredBtn');
+    const nextUnanswered = findNextUnanswered(currentQuestion);
+    
+    if (nextUnanswered !== -1) {
+        nextUnansweredBtn.style.display = 'inline-flex';
+        nextUnansweredBtn.textContent = `跳到第 ${nextUnanswered + 1} 题 ⚠️`;
+    } else {
+        // 检查是否有任何未答题
+        const firstUnanswered = findNextUnanswered(-1);
+        if (firstUnanswered !== -1) {
+            nextUnansweredBtn.style.display = 'inline-flex';
+            nextUnansweredBtn.textContent = `跳到第 ${firstUnanswered + 1} 题 ⚠️`;
+        } else {
+            nextUnansweredBtn.style.display = 'none';
+        }
+    }
 }
 
 // 提交测评
