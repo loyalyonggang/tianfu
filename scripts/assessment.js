@@ -60,11 +60,58 @@ const scaleOptions = [
 let currentQuestion = 0;
 let answers = {};
 
+// 本地存储键名
+const STORAGE_KEY = 'assessment_progress';
+
+// 加载保存的进度
+function loadProgress() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        const data = JSON.parse(saved);
+        answers = data.answers || {};
+        currentQuestion = data.currentQuestion || 0;
+        return true;
+    }
+    return false;
+}
+
+// 保存进度
+function saveProgress() {
+    const data = {
+        answers: answers,
+        currentQuestion: currentQuestion,
+        timestamp: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+// 清除进度
+function clearProgress() {
+    localStorage.removeItem(STORAGE_KEY);
+}
+
 // 开始测评
 function startAssessment() {
     document.getElementById('introPage').style.display = 'none';
     document.getElementById('questionsPage').style.display = 'block';
     showQuestion(0);
+}
+
+// 继续测评
+function continueAssessment() {
+    if (loadProgress()) {
+        document.getElementById('introPage').style.display = 'none';
+        document.getElementById('questionsPage').style.display = 'block';
+        showQuestion(currentQuestion);
+    } else {
+        startAssessment();
+    }
+}
+
+// 返回首页
+function returnToHome() {
+    saveProgress();
+    window.location.href = 'index.html';
 }
 
 // 显示问题
@@ -128,7 +175,14 @@ function showQuestion(index) {
 // 选择选项
 function selectOption(questionId, value) {
     answers[questionId] = value;
-    showQuestion(currentQuestion);
+    saveProgress(); // 自动保存进度
+    
+    // 更新选中状态（不重新渲染，避免闪烁）
+    const buttons = document.querySelectorAll('.option-button');
+    buttons.forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    event.target.closest('.option-button').classList.add('selected');
     
     // 自动跳转到下一题
     setTimeout(() => {
@@ -141,7 +195,14 @@ function selectOption(questionId, value) {
 // 选择选项（单选）
 function selectChoice(questionId, value) {
     answers[questionId] = value;
-    showQuestion(currentQuestion);
+    saveProgress(); // 自动保存进度
+    
+    // 更新选中状态（不重新渲染，避免闪烁）
+    const buttons = document.querySelectorAll('.option-button');
+    buttons.forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    event.target.closest('.option-button').classList.add('selected');
     
     // 自动跳转到下一题
     setTimeout(() => {
@@ -154,6 +215,7 @@ function selectChoice(questionId, value) {
 // 保存文本答案
 function saveTextAnswer(questionId, value) {
     answers[questionId] = value;
+    saveProgress(); // 自动保存进度
 }
 
 // 下一题
@@ -187,6 +249,9 @@ function submitAssessment() {
         alert(`请完成所有必填题目！还有 ${unanswered.length} 道题未回答。`);
         return;
     }
+    
+    // 清除保存的进度
+    clearProgress();
     
     // 显示加载页面
     document.getElementById('questionsPage').style.display = 'none';
@@ -226,5 +291,43 @@ function simulateReportGeneration() {
 
 // 初始化
 document.addEventListener('DOMContentLoaded', function() {
-    // 可以在这里添加初始化代码
+    // 检查是否有保存的进度
+    const hasProgress = loadProgress();
+    
+    if (hasProgress) {
+        // 显示继续测评的提示
+        const introPage = document.getElementById('introPage');
+        if (introPage) {
+            const continueHint = document.createElement('div');
+            continueHint.className = 'continue-hint';
+            continueHint.innerHTML = `
+                <div class="hint-content">
+                    <span class="hint-icon">📝</span>
+                    <p>检测到您有未完成的测评</p>
+                    <div class="hint-buttons">
+                        <button class="btn btn-primary" onclick="continueAssessment()">
+                            继续测评 (第${currentQuestion + 1}题)
+                        </button>
+                        <button class="btn btn-secondary" onclick="startNewAssessment()">
+                            重新开始
+                        </button>
+                    </div>
+                </div>
+            `;
+            introPage.insertBefore(continueHint, introPage.firstChild);
+        }
+    }
 });
+
+// 重新开始测评
+function startNewAssessment() {
+    if (confirm('确定要重新开始吗？之前的答案将被清除。')) {
+        clearProgress();
+        answers = {};
+        currentQuestion = 0;
+        // 移除提示
+        const hint = document.querySelector('.continue-hint');
+        if (hint) hint.remove();
+        startAssessment();
+    }
+}
