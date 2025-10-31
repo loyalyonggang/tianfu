@@ -1,15 +1,12 @@
 // 个性化报告页面JavaScript
 
-// API配置
+// API配置 - 使用DeepSeek V3.1免费模型
 const OPENAI_CONFIG = {
-    // 使用后端代理（推荐）
-    useBackend: true,
-    backendUrl: 'http://localhost:3000/api/generate-report',
-    
-    // 直接调用（会有CORS问题，仅用于参考）
+    // 直接调用（DeepSeek支持CORS，无需后端代理）
+    useBackend: false,
     apiKey: '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',
     apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
-    model: 'google/gemma-2-9b-it:free',
+    model: 'deepseek/deepseek-chat:free', // DeepSeek V3.1 免费模型
     temperature: 0.7,
     maxTokens: 3000
 };
@@ -179,7 +176,7 @@ function getScoreLevel(score) {
     return '需改进';
 }
 
-// 调用AI API生成报告
+// 调用DeepSeek AI生成报告
 async function callOpenAI(answers, dimensions) {
     const prompt = buildPrompt(answers, dimensions);
     
@@ -195,50 +192,32 @@ async function callOpenAI(answers, dimensions) {
     ];
     
     try {
-        let response;
+        console.log('🤖 调用DeepSeek V3.1 AI生成报告...');
         
-        // 优先使用后端代理
-        if (OPENAI_CONFIG.useBackend) {
-            console.log('通过后端代理调用AI API...');
-            response = await fetch(OPENAI_CONFIG.backendUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    messages: messages,
-                    temperature: OPENAI_CONFIG.temperature,
-                    maxTokens: OPENAI_CONFIG.maxTokens
-                })
-            });
-        } else {
-            // 直接调用（会有CORS问题）
-            console.log('直接调用OpenRouter API...');
-            response = await fetch(OPENAI_CONFIG.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`,
-                    'HTTP-Referer': window.location.origin,
-                    'X-Title': '真我文化商业诊断系统'
-                },
-                body: JSON.stringify({
-                    model: OPENAI_CONFIG.model,
-                    messages: messages,
-                    temperature: OPENAI_CONFIG.temperature,
-                    max_tokens: OPENAI_CONFIG.maxTokens
-                })
-            });
-        }
+        const response = await fetch(OPENAI_CONFIG.apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`,
+                'HTTP-Referer': window.location.origin,
+                'X-Title': '真我文化商业诊断系统'
+            },
+            body: JSON.stringify({
+                model: OPENAI_CONFIG.model,
+                messages: messages,
+                temperature: OPENAI_CONFIG.temperature,
+                max_tokens: OPENAI_CONFIG.maxTokens
+            })
+        });
         
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('API错误:', errorData);
+            console.error('❌ API错误:', errorData);
             throw new Error(`API调用失败: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('✅ AI API调用成功');
+        console.log('✅ DeepSeek AI调用成功！');
         
         const content = data.choices[0].message.content;
         

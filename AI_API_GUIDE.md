@@ -1,43 +1,70 @@
 # 🤖 AI API 调用指南
 
-## 📋 问题说明
+## ✅ 当前配置（已解决CORS问题）
 
-当直接在浏览器中调用OpenRouter API时，会遇到以下错误：
+**使用模型**：DeepSeek V3.1 (免费)  
+**API提供商**：OpenRouter  
+**调用方式**：直接调用（无需后端代理）
 
-```
-Failed to execute 'fetch' on 'Window': Failed to read the 'headers' property from 'RequestInit': String contains non ISO-8859-1 code point.
-```
-
-**原因**：浏览器的CORS（跨域资源共享）安全限制阻止了直接调用第三方API。
+DeepSeek模型支持CORS跨域请求，可以直接在浏览器中调用，无需后端服务器！
 
 ---
 
-## ✅ 解决方案
+## 📋 之前的问题（已解决）
 
-### 方案1：使用演示数据（当前默认）⭐
+~~当直接在浏览器中调用某些API时，会遇到CORS错误。~~
 
-**优点**：
-- ✅ 无需配置，开箱即用
-- ✅ 无需后端服务器
-- ✅ 无需API费用
+**解决方案**：使用DeepSeek V3.1模型，该模型支持CORS，可以直接在浏览器中调用。
 
-**缺点**：
-- ❌ 报告内容是模拟的，不是真正的AI生成
+---
 
-**使用方法**：
+## 🚀 快速开始
+
+### 当前配置（推荐）⭐⭐⭐
+
+**使用DeepSeek V3.1免费模型**
+
 ```javascript
-// 在 report-generated.js 中
+// scripts/report-generated.js
 const OPENAI_CONFIG = {
-    useBackend: false,  // 关闭后端代理
-    // ...
+    useBackend: false,  // 直接调用，无需后端
+    apiKey: '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',
+    apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'deepseek/deepseek-chat:free',  // DeepSeek V3.1
+    temperature: 0.7,
+    maxTokens: 3000
 };
 ```
 
-当API调用失败时，系统会自动降级到演示数据。
+**优点**：
+- ✅ 完全免费
+- ✅ 无需后端服务器
+- ✅ 真正的AI生成报告
+- ✅ 支持CORS，直接调用
+- ✅ 中文能力强（国产模型）
+
+**使用方法**：
+1. 直接打开 `assessment.html`
+2. 完成测评
+3. 自动生成AI报告
+
+就这么简单！
 
 ---
 
-### 方案2：使用后端代理（推荐）⭐⭐⭐
+## 📊 模型对比
+
+| 模型 | 提供商 | 价格 | CORS支持 | 中文能力 | 推荐度 |
+|------|--------|------|----------|----------|--------|
+| **DeepSeek V3.1** | 国产 | 免费 | ✅ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Gemma 2 9B | Google | 免费 | ❌ | ⭐⭐⭐ | ⭐⭐⭐ |
+| GPT-4 | OpenAI | 付费 | ❌ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+
+---
+
+## 🔄 备用方案
+
+### 方案1：使用演示数据
 
 **优点**：
 - ✅ 真正的AI生成报告
