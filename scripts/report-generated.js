@@ -519,7 +519,7 @@ async function generateAlipayQRCode() {
             },
             body: JSON.stringify({
                 reportId: reportId,
-                amount: 99,
+                amount: 1,
                 subject: '商业诊断报告'
             })
         });
