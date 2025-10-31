@@ -96,6 +96,24 @@
                 </div>
             </div>
         </div>
+
+        <!-- 未完成提示弹窗 -->
+        <div class="incomplete-modal" id="incompleteModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-icon">⚠️</div>
+                <h2>还有题目未完成</h2>
+                <p class="modal-message" id="modalMessage"></p>
+                <div class="unanswered-list" id="unansweredList"></div>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="goToFirstUnanswered()">
+                        前往第一题未答题
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeIncompleteModal()">
+                        我再检查一下
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="scripts/assessment.js"></script>

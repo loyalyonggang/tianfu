@@ -241,12 +241,18 @@ function updateProgress() {
 
 // 提交测评
 function submitAssessment() {
-    // 检查必填项
-    const requiredQuestions = questions.filter(q => q.id <= 35 || q.id === 36 || q.id === 41 || q.id === 45);
-    const unanswered = requiredQuestions.filter(q => !answers[q.id]);
+    // 检查必填项（所有题目都是必填的）
+    const unanswered = questions.filter(q => {
+        const answer = answers[q.id];
+        // 检查答案是否存在且不为空
+        if (answer === undefined || answer === null) return true;
+        if (typeof answer === 'string' && answer.trim() === '') return true;
+        return false;
+    });
     
     if (unanswered.length > 0) {
-        alert(`请完成所有必填题目！还有 ${unanswered.length} 道题未回答。`);
+        // 显示未完成题目的弹窗
+        showIncompleteModal(unanswered);
         return;
     }
     
@@ -259,6 +265,69 @@ function submitAssessment() {
     
     // 模拟生成报告过程
     simulateReportGeneration();
+}
+
+// 显示未完成题目弹窗
+function showIncompleteModal(unanswered) {
+    const modal = document.getElementById('incompleteModal');
+    const message = document.getElementById('modalMessage');
+    const list = document.getElementById('unansweredList');
+    
+    // 设置消息
+    message.textContent = `您还有 ${unanswered.length} 道题目未回答，请完成后再提交。`;
+    
+    // 生成未回答题目列表（最多显示10个）
+    const displayCount = Math.min(unanswered.length, 10);
+    let listHTML = '<ul class="unanswered-items">';
+    
+    for (let i = 0; i < displayCount; i++) {
+        const q = unanswered[i];
+        const questionIndex = questions.findIndex(item => item.id === q.id);
+        const shortText = q.text.length > 30 ? q.text.substring(0, 30) + '...' : q.text;
+        listHTML += `<li onclick="goToQuestion(${questionIndex})">
+            <span class="question-num">第 ${questionIndex + 1} 题</span>
+            <span class="question-preview">${shortText}</span>
+        </li>`;
+    }
+    
+    if (unanswered.length > 10) {
+        listHTML += `<li class="more-items">还有 ${unanswered.length - 10} 道题未显示...</li>`;
+    }
+    
+    listHTML += '</ul>';
+    list.innerHTML = listHTML;
+    
+    // 显示弹窗
+    modal.style.display = 'flex';
+}
+
+// 关闭未完成弹窗
+function closeIncompleteModal() {
+    document.getElementById('incompleteModal').style.display = 'none';
+}
+
+// 跳转到第一个未回答的题目
+function goToFirstUnanswered() {
+    const unanswered = questions.filter(q => {
+        const answer = answers[q.id];
+        return answer === undefined || answer === null || 
+               (typeof answer === 'string' && answer.trim() === '');
+    });
+    
+    if (unanswered.length > 0) {
+        const firstUnanswered = unanswered[0];
+        const questionIndex = questions.findIndex(q => q.id === firstUnanswered.id);
+        closeIncompleteModal();
+        showQuestion(questionIndex);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+// 跳转到指定题目
+function goToQuestion(index) {
+    closeIncompleteModal();
+    showQuestion(index);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // 模拟报告生成
@@ -330,4 +399,24 @@ function startNewAssessment() {
         if (hint) hint.remove();
         startAssessment();
     }
+}
+
+// 调试：查看所有答案（开发用）
+function debugAnswers() {
+    console.log('=== 答案统计 ===');
+    console.log('总题目数:', questions.length);
+    console.log('已回答数:', Object.keys(answers).length);
+    console.log('未回答的题目:');
+    
+    questions.forEach((q, index) => {
+        const answer = answers[q.id];
+        const hasAnswer = answer !== undefined && answer !== null && 
+                         (typeof answer !== 'string' || answer.trim() !== '');
+        
+        if (!hasAnswer) {
+            console.log(`第${index + 1}题 (ID: ${q.id}): ${q.text}`);
+        }
+    });
+    
+    console.log('所有答案:', answers);
 }

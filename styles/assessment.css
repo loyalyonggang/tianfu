@@ -408,6 +408,122 @@
     transform: scale(1.02);
 }
 
+/* 未完成题目弹窗 */
+.incomplete-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.4s ease;
+}
+
+.modal-icon {
+    font-size: 60px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content h2 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.modal-message {
+    font-size: 16px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.unanswered-list {
+    margin-bottom: 30px;
+}
+
+.unanswered-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.unanswered-items li {
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.unanswered-items li:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.unanswered-items li.more-items {
+    cursor: default;
+    background: #fff3cd;
+    color: #856404;
+    justify-content: center;
+}
+
+.unanswered-items li.more-items:hover {
+    transform: none;
+    background: #fff3cd;
+}
+
+.question-num {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.question-preview {
+    color: #666;
+    font-size: 14px;
+    flex: 1;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.modal-buttons .btn {
+    flex: 1;
+    max-width: 200px;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .intro-content {
@@ -449,6 +565,24 @@
     }
 
     .hint-buttons .btn {
+        width: 100%;
+    }
+
+    .modal-content {
+        padding: 30px 20px;
+        width: 95%;
+    }
+
+    .modal-content h2 {
+        font-size: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
+    .modal-buttons .btn {
+        max-width: 100%;
         width: 100%;
     }
 }
