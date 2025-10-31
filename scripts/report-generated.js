@@ -128,19 +128,22 @@ function showLoadingState() {
 
 // 计算8大维度得分
 function calculateDimensions(answers) {
-    // 8大维度的题目映射
+    // 8大维度的题目映射（基于35道评分题，ID为1-35）
     const dimensionMapping = {
-        'A-存在感': [15, 16, 22, 29, 30], // 题目1, 16, 22, 29, 30
-        'B-引力场': [2, 9, 10, 23, 30],   // 题目2, 9, 10, 23, 30
-        'C-说服力': [3, 10, 17, 24, 31],  // 题目3, 10, 17, 24, 31
-        'D-价值力': [4, 11, 18, 25, 32],  // 题目4, 11, 18, 25, 32
-        'E-兑现力': [5, 12, 19, 26, 33],  // 题目5, 12, 19, 26, 33
-        'F-复利力': [6, 7, 14, 21, 28],   // 题目6, 7, 14, 21, 28
-        'G-精力值': [8, 13, 20, 27, 34],  // 题目8, 13, 20, 27, 34
-        'H-效率值': [7, 14, 21, 28, 35]   // 题目7, 14, 21, 28, 35
+        'A-存在感': [1, 15, 16, 22, 29],  // 定位、形象、认知
+        'B-引力场': [2, 9, 23, 30],       // 获客、内容、活动
+        'C-说服力': [3, 10, 17, 24, 31],  // 价值主张、差异化
+        'D-价值力': [4, 11, 18, 25, 32],  // 产品价值、定价
+        'E-兑现力': [5, 12, 19, 26, 33],  // 交付、口碑、复购
+        'F-复利力': [6, 7, 14, 21, 28],   // 持续输出、工具化、效率
+        'G-精力值': [8, 13, 20, 27, 34],  // 热情、抗压、能量管理
+        'H-效率值': [7, 14, 21, 28, 35]   // 自动化、工具、数据驱动
     };
     
     const dimensions = [];
+    
+    console.log('=== 开始计算维度得分 ===');
+    console.log('用户答案:', answers);
     
     for (const [name, questionIds] of Object.entries(dimensionMapping)) {
         let totalScore = 0;
@@ -148,14 +151,19 @@ function calculateDimensions(answers) {
         
         questionIds.forEach(id => {
             const answer = answers[id];
-            if (answer !== undefined && answer !== null) {
+            if (answer !== undefined && answer !== null && typeof answer === 'number') {
                 totalScore += answer;
                 count++;
+                console.log(`${name} - 题目${id}: ${answer}分`);
+            } else {
+                console.warn(`${name} - 题目${id}: 无答案或非数字`);
             }
         });
         
         const avgScore = count > 0 ? totalScore / count : 0;
         const score = Math.round((avgScore / 5) * 100); // 转换为百分制
+        
+        console.log(`${name}: 总分${totalScore}, 题数${count}, 平均${avgScore.toFixed(2)}, 得分${score}`);
         
         dimensions.push({
             label: name.split('-')[0],
@@ -165,6 +173,7 @@ function calculateDimensions(answers) {
         });
     }
     
+    console.log('=== 维度得分计算完成 ===');
     return dimensions;
 }
 
