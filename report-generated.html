@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>您的专属商业诊断报告 - 真我文化</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/report-generated.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="report-container">
+        <!-- 顶部导航 -->
+        <header class="report-header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">真我</div>
+                    <span class="logo-text">真我文化</span>
+                </div>
+                <div class="header-actions">
+                    <span class="user-name" id="userName">张先生</span>
+                    <button class="btn btn-outline btn-small" onclick="showExportOptions()" id="exportBtn" style="display: none;">
+                        📥 导出报告
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 报告主体 -->
+        <div class="report-main" id="reportContent">
+            <!-- 免费预览区域 -->
+            <section class="free-section">
+                <!-- 标题区 -->
+                <div class="report-title-section">
+                    <h1 class="report-title">🎯 您的专属商业诊断报告</h1>
+                    <p class="report-subtitle">基于AI深度分析，为您量身定制的商业突破方案</p>
+                    <div class="report-meta">
+                        <span>📅 生成时间：<span id="reportDate"></span></span>
+                        <span>🔢 报告编号：<span id="reportId"></span></span>
+                    </div>
+                </div>
+
+                <!-- 综合评分卡片 -->
+                <div class="score-card">
+                    <div class="score-main">
+                        <div class="score-circle">
+                            <svg width="200" height="200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="12"/>
+                                <circle id="scoreCircle" cx="100" cy="100" r="90" fill="none" 
+                                        stroke="url(#gradient)" stroke-width="12" 
+                                        stroke-dasharray="565" stroke-dashoffset="565"
+                                        transform="rotate(-90 100 100)"/>
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#667eea"/>
+                                        <stop offset="100%" style="stop-color:#764ba2"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="score-text">
+                                <div class="score-number" id="totalScore">0</div>
+                                <div class="score-label">综合得分</div>
+                            </div>
+                        </div>
+                        <div class="score-info">
+                            <div class="score-level" id="scoreLevel">
+                                <span class="level-badge">优秀</span>
+                            </div>
+                            <p class="score-summary" id="scoreSummary">
+                                您的商业模式整体表现优秀，在多个维度展现出较强的竞争力...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8大维度雷达图 -->
+                <div class="dimensions-section">
+                    <h2 class="section-title">📊 8大维度分析</h2>
+                    <div class="radar-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div class="dimensions-grid" id="dimensionsGrid">
+                        <!-- 通过JS动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 前2个维度详细分析（免费） -->
+                <div class="analysis-section">
+                    <h2 class="section-title">💡 维度详细分析（预览）</h2>
+                    <div class="analysis-preview" id="analysisPreview">
+                        <!-- 通过JS动态生成 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 付费解锁区域 -->
+            <section class="locked-section">
+                <div class="blur-overlay">
+                    <div class="blur-content" id="lockedContent">
+                        <h2 class="section-title">🔍 核心问题诊断</h2>
+                        <div class="diagnosis-content">
+                            <p>根据您的测评结果，我们识别出以下核心问题...</p>
+                            <p>这些问题正在严重制约您的商业发展...</p>
+                        </div>
+
+                        <h2 class="section-title">💪 改进建议</h2>
+                        <div class="suggestions-content">
+                            <p>针对您的具体情况，我们提供以下改进建议...</p>
+                        </div>
+
+                        <h2 class="section-title">📅 3个月行动计划</h2>
+                        <div class="action-plan-content">
+                            <p>为了帮助您快速突破，我们制定了详细的行动计划...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="unlock-overlay">
+                        <div class="unlock-icon">🔒</div>
+                        <h3>解锁查看完整报告</h3>
+                        <p>还有70%的精彩内容等待您探索</p>
+                        <button class="btn btn-primary btn-large pulse" onclick="showPaymentModal()">
+                            立即解锁 ¥99
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 底部固定解锁按钮 -->
+        <div class="fixed-unlock-bar" id="fixedUnlockBar">
+            <div class="unlock-bar-content">
+                <div class="unlock-bar-text">
+                    <strong>🎁 限时特惠</strong>
+                    <span>解锁完整报告仅需 ¥99（原价¥299）</span>
+                </div>
+                <button class="btn btn-primary" onclick="showPaymentModal()">
+                    立即解锁
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 付费弹窗 -->
+    <div class="payment-modal" id="paymentModal" style="display: none;">
+        <div class="modal-content payment-content">
+            <button class="modal-close" onclick="closePaymentModal()">×</button>
+            
+            <div class="payment-header">
+                <div class="payment-icon">🎉</div>
+                <h2>恭喜！您的专属报告已生成</h2>
+                <p class="payment-subtitle">解锁完整内容，开启商业突破之旅</p>
+            </div>
+
+            <div class="payment-comparison">
+                <div class="comparison-col free">
+                    <h3>当前可查看</h3>
+                    <ul>
+                        <li>✓ 综合评分和雷达图</li>
+                        <li>✓ 8大维度得分</li>
+                        <li>✓ 前2个维度简要分析</li>
+                    </ul>
+                </div>
+                <div class="comparison-col paid">
+                    <h3>解锁后可查看</h3>
+                    <ul>
+                        <li>🔒 6个维度的详细分析</li>
+                        <li>🔒 核心问题深度诊断</li>
+                        <li>🔒 具体改进建议</li>
+                        <li>🔒 3个月行动计划</li>
+                        <li>🔒 资源推荐清单</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="payment-bonus">
+                <h3>🎁 额外赠送</h3>
+                <div class="bonus-grid">
+                    <div class="bonus-item">📄 PDF格式报告</div>
+                    <div class="bonus-item">🖼️ 高清图片导出</div>
+                    <div class="bonus-item">📧 邮箱发送服务</div>
+                    <div class="bonus-item">💬 30分钟1对1解读</div>
+                </div>
+            </div>
+
+            <div class="payment-price">
+                <div class="price-original">原价：<span>¥299</span></div>
+                <div class="price-current">
+                    <span class="price-label">限时特惠</span>
+                    <span class="price-amount">¥99</span>
+                </div>
+                <div class="price-countdown">
+                    优惠剩余：<span id="countdown">23:59:45</span>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <button class="payment-btn wechat" onclick="selectPaymentMethod('wechat')">
+                    <span class="payment-icon">💚</span>
+                    <span>微信支付</span>
+                </button>
+                <button class="payment-btn alipay" onclick="selectPaymentMethod('alipay')">
+                    <span class="payment-icon">💙</span>
+                    <span>支付宝</span>
+                </button>
+            </div>
+
+            <div class="payment-guarantee">
+                <p>🛡️ 7天不满意无理由退款 | 🔒 支付安全加密 | 📞 24小时客服支持</p>
+            </div>
+
+            <button class="payment-later" onclick="closePaymentModal()">我再想想</button>
+        </div>
+    </div>
+
+    <!-- 支付二维码弹窗 -->
+    <div class="qrcode-modal" id="qrcodeModal" style="display: none;">
+        <div class="modal-content qrcode-content">
+            <button class="modal-close" onclick="closeQrcodeModal()">×</button>
+            <h2 id="paymentMethodTitle">微信支付</h2>
+            <div class="qrcode-container">
+                <div class="qrcode-placeholder" id="qrcodePlaceholder">
+                    <p>请使用<span id="paymentMethodName">微信</span>扫描二维码支付</p>
+                    <div class="qrcode-image">
+                        <!-- 这里应该显示真实的支付二维码 -->
+                        <div class="demo-qrcode">
+                            <p>演示模式</p>
+                            <p>实际使用时会显示支付二维码</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-amount-display">
+                    支付金额：<span class="amount">¥99.00</span>
+                </div>
+                <div class="payment-status" id="paymentStatus">
+                    <div class="status-checking">
+                        <div class="spinner"></div>
+                        <p>等待支付中...</p>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-outline" onclick="simulatePaymentSuccess()">
+                模拟支付成功（测试用）
+            </button>
+        </div>
+    </div>
+
+    <!-- 导出选项弹窗 -->
+    <div class="export-modal" id="exportModal" style="display: none;">
+        <div class="modal-content export-content">
+            <button class="modal-close" onclick="closeExportModal()">×</button>
+            <h2>📥 导出报告</h2>
+            <div class="export-options">
+                <button class="export-option" onclick="exportToPDF()">
+                    <span class="export-icon">📄</span>
+                    <span class="export-label">导出为PDF</span>
+                </button>
+                <button class="export-option" onclick="exportToImage()">
+                    <span class="export-icon">🖼️</span>
+                    <span class="export-label">导出为图片</span>
+                </button>
+                <button class="export-option" onclick="showEmailInput()">
+                    <span class="export-icon">📧</span>
+                    <span class="export-label">发送到邮箱</span>
+                </button>
+            </div>
+            <div class="email-input-section" id="emailInputSection" style="display: none;">
+                <input type="email" class="email-input" id="emailInput" placeholder="请输入您的邮箱地址">
+                <button class="btn btn-primary" onclick="sendToEmail()">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/report-generated.js"></script>
+</body>
+</html>

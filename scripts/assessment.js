@@ -350,9 +350,9 @@ function simulateReportGeneration() {
             currentStep++;
         } else {
             clearInterval(interval);
-            // 跳转到报告页面
+            // 跳转到个性化报告页面
             setTimeout(() => {
-                window.location.href = 'business-assessment.html';
+                window.location.href = 'report-generated.html';
             }, 1000);
         }
     }, 1500);
