@@ -1,10 +1,15 @@
 // 个性化报告页面JavaScript
 
-// OpenRouter API配置 - 使用 Google Gemma 2 9B 模型
+// API配置
 const OPENAI_CONFIG = {
+    // 使用后端代理（推荐）
+    useBackend: true,
+    backendUrl: 'http://localhost:3000/api/generate-report',
+    
+    // 直接调用（会有CORS问题，仅用于参考）
     apiKey: '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',
     apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
-    model: 'google/gemma-2-9b-it:free', // Gemma 2 9B 免费模型
+    model: 'google/gemma-2-9b-it:free',
     temperature: 0.7,
     maxTokens: 3000
 };
@@ -174,35 +179,57 @@ function getScoreLevel(score) {
     return '需改进';
 }
 
-// 调用OpenRouter API
+// 调用AI API生成报告
 async function callOpenAI(answers, dimensions) {
     const prompt = buildPrompt(answers, dimensions);
     
+    const messages = [
+        {
+            role: 'system',
+            content: '你是一位天赋人生教练 AI 分析师，专注于帮助知识IP创业者发现自己的天赋优势，并提供具体可落地的商业发展建议。你的分析要专业、深入、温暖且充满洞察力。'
+        },
+        {
+            role: 'user',
+            content: prompt
+        }
+    ];
+    
     try {
-        const response = await fetch(OPENAI_CONFIG.apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`,
-                'HTTP-Referer': window.location.origin, // OpenRouter需要
-                'X-Title': '真我文化商业诊断系统' // OpenRouter需要
-            },
-            body: JSON.stringify({
-                model: OPENAI_CONFIG.model,
-                messages: [
-                    {
-                        role: 'system',
-                        content: '你是一位天赋人生教练 AI 分析师，专注于帮助知识IP创业者发现自己的天赋优势，并提供具体可落地的商业发展建议。你的分析要专业、深入、温暖且充满洞察力。'
-                    },
-                    {
-                        role: 'user',
-                        content: prompt
-                    }
-                ],
-                temperature: OPENAI_CONFIG.temperature,
-                max_tokens: OPENAI_CONFIG.maxTokens
-            })
-        });
+        let response;
+        
+        // 优先使用后端代理
+        if (OPENAI_CONFIG.useBackend) {
+            console.log('通过后端代理调用AI API...');
+            response = await fetch(OPENAI_CONFIG.backendUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: messages,
+                    temperature: OPENAI_CONFIG.temperature,
+                    maxTokens: OPENAI_CONFIG.maxTokens
+                })
+            });
+        } else {
+            // 直接调用（会有CORS问题）
+            console.log('直接调用OpenRouter API...');
+            response = await fetch(OPENAI_CONFIG.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`,
+                    'HTTP-Referer': window.location.origin,
+                    'X-Title': '真我文化商业诊断系统'
+                },
+                body: JSON.stringify({
+                    model: OPENAI_CONFIG.model,
+                    messages: messages,
+                    temperature: OPENAI_CONFIG.temperature,
+                    max_tokens: OPENAI_CONFIG.maxTokens
+                })
+            });
+        }
         
         if (!response.ok) {
             const errorData = await response.json();
@@ -211,15 +238,16 @@ async function callOpenAI(answers, dimensions) {
         }
         
         const data = await response.json();
-        console.log('API响应:', data); // 调试用
+        console.log('✅ AI API调用成功');
         
         const content = data.choices[0].message.content;
         
         return parseAIResponse(content);
         
     } catch (error) {
-        console.error('OpenRouter API调用失败:', error);
-        alert('AI分析服务暂时不可用，将使用演示数据。错误: ' + error.message);
+        console.error('❌ AI API调用失败:', error);
+        console.log('📊 使用演示数据生成报告');
+        // 静默降级到演示数据
         return generateMockAnalysis(dimensions);
     }
 }

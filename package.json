@@ -1,0 +1,25 @@
+{
+  "name": "talent-wealth-assessment",
+  "version": "2.0.0",
+  "description": "知识IP商业诊断系统",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "assessment",
+    "business",
+    "ai"
+  ],
+  "author": "真我文化",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
