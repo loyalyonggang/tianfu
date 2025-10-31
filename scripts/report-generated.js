@@ -1,10 +1,10 @@
 // 个性化报告页面JavaScript
 
-// OpenAI API配置
+// OpenRouter API配置 - 使用 Google Gemma 2 9B 模型
 const OPENAI_CONFIG = {
-    apiKey: 'YOUR_OPENAI_API_KEY', // 需要替换为真实的API Key
-    apiUrl: 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-4',
+    apiKey: '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',
+    apiUrl: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'google/gemma-2-9b-it:free', // Gemma 2 9B 免费模型
     temperature: 0.7,
     maxTokens: 3000
 };
@@ -162,7 +162,7 @@ function getScoreLevel(score) {
     return '需改进';
 }
 
-// 调用OpenAI API
+// 调用OpenRouter API
 async function callOpenAI(answers, dimensions) {
     const prompt = buildPrompt(answers, dimensions);
     
@@ -171,14 +171,16 @@ async function callOpenAI(answers, dimensions) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`
+                'Authorization': `Bearer ${OPENAI_CONFIG.apiKey}`,
+                'HTTP-Referer': window.location.origin, // OpenRouter需要
+                'X-Title': '真我文化商业诊断系统' // OpenRouter需要
             },
             body: JSON.stringify({
                 model: OPENAI_CONFIG.model,
                 messages: [
                     {
                         role: 'system',
-                        content: '你是一位资深的知识IP商业顾问，拥有10年以上的知识变现和个人品牌打造经验。请根据用户的测评结果，生成专业、深入、可落地的商业诊断报告。'
+                        content: '你是一位天赋人生教练 AI 分析师，专注于帮助知识IP创业者发现自己的天赋优势，并提供具体可落地的商业发展建议。你的分析要专业、深入、温暖且充满洞察力。'
                     },
                     {
                         role: 'user',
@@ -190,13 +192,22 @@ async function callOpenAI(answers, dimensions) {
             })
         });
         
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('API错误:', errorData);
+            throw new Error(`API调用失败: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('API响应:', data); // 调试用
+        
         const content = data.choices[0].message.content;
         
         return parseAIResponse(content);
         
     } catch (error) {
-        console.error('OpenAI API调用失败:', error);
+        console.error('OpenRouter API调用失败:', error);
+        alert('AI分析服务暂时不可用，将使用演示数据。错误: ' + error.message);
         return generateMockAnalysis(dimensions);
     }
 }
@@ -205,37 +216,52 @@ async function callOpenAI(answers, dimensions) {
 function buildPrompt(answers, dimensions) {
     const userInfo = reportData.userInfo;
     
-    let prompt = `请根据以下测评结果，生成一份商业诊断报告：\n\n`;
-    prompt += `【基本信息】\n`;
-    prompt += `- 称呼：${userInfo.name}\n`;
-    prompt += `- 性别：${userInfo.gender}\n`;
-    prompt += `- 年龄：${userInfo.age}\n`;
-    prompt += `- 行业：${userInfo.industry}\n`;
-    prompt += `- 月收入：${userInfo.income}\n\n`;
+    let prompt = `作为一位天赋人生教练，请为以下用户生成一份温暖、专业且充满洞察力的商业诊断报告：\n\n`;
     
-    prompt += `【8大维度得分】\n`;
+    prompt += `【用户基本信息】\n`;
+    prompt += `- 称呼：${userInfo.name || '学员'}\n`;
+    prompt += `- 性别：${userInfo.gender || '未提供'}\n`;
+    prompt += `- 年龄段：${userInfo.age || '未提供'}\n`;
+    prompt += `- 所在行业：${userInfo.industry || '未提供'}\n`;
+    prompt += `- 当前月收入：${userInfo.income || '未提供'}\n\n`;
+    
+    prompt += `【8大商业维度评估结果】\n`;
     dimensions.forEach(d => {
-        prompt += `- ${d.name}：${d.score}/100 (${d.level})\n`;
+        prompt += `${d.label}. ${d.name}：${d.score}/100分 (${d.level})\n`;
     });
     
-    prompt += `\n请按以下结构生成报告（使用JSON格式）：\n`;
+    prompt += `\n【分析要求】\n`;
+    prompt += `1. 用温暖、鼓励的语气，像一位经验丰富的人生教练\n`;
+    prompt += `2. 深入分析用户的天赋优势和潜力\n`;
+    prompt += `3. 指出具体可改进的地方，但要给予信心\n`;
+    prompt += `4. 提供可落地的行动建议，不要空泛\n`;
+    prompt += `5. 字数控制在合理范围内\n\n`;
+    
+    prompt += `请按以下JSON格式返回分析结果：\n`;
     prompt += `{\n`;
-    prompt += `  "summary": "一句话总结用户的商业状态",\n`;
+    prompt += `  "summary": "一句话总结用户的整体状态，要温暖且有洞察力",\n`;
     prompt += `  "dimensionAnalysis": [\n`;
     prompt += `    {\n`;
-    prompt += `      "dimension": "维度名称",\n`;
-    prompt += `      "currentState": "当前状态描述",\n`;
-    prompt += `      "problems": "主要问题",\n`;
-    prompt += `      "suggestions": "改进建议"\n`;
+    prompt += `      "dimension": "维度名称（如：存在感）",\n`;
+    prompt += `      "currentState": "当前状态的具体描述，结合得分分析",\n`;
+    prompt += `      "problems": "存在的主要问题或挑战，语气要温和",\n`;
+    prompt += `      "suggestions": "3-5条具体可行的改进建议"\n`;
     prompt += `    }\n`;
+    prompt += `    // 为所有8个维度生成分析\n`;
     prompt += `  ],\n`;
-    prompt += `  "coreProblems": ["问题1", "问题2", "问题3"],\n`;
+    prompt += `  "coreProblems": [\n`;
+    prompt += `    "当前最需要突破的核心问题1",\n`;
+    prompt += `    "当前最需要突破的核心问题2",\n`;
+    prompt += `    "当前最需要突破的核心问题3"\n`;
+    prompt += `  ],\n`;
     prompt += `  "actionPlan": {\n`;
-    prompt += `    "immediate": ["本周行动1", "本周行动2"],\n`;
-    prompt += `    "shortTerm": ["1个月目标1", "1个月目标2"],\n`;
-    prompt += `    "midTerm": ["3个月目标1", "3个月目标2"]\n`;
+    prompt += `    "immediate": ["本周可以立即开始的行动1", "本周可以立即开始的行动2"],\n`;
+    prompt += `    "shortTerm": ["1个月内要达成的目标1", "1个月内要达成的目标2"],\n`;
+    prompt += `    "midTerm": ["3个月内要实现的突破1", "3个月内要实现的突破2"]\n`;
     prompt += `  }\n`;
-    prompt += `}`;
+    prompt += `}\n\n`;
+    
+    prompt += `重要提示：请确保返回的是纯JSON格式，不要包含任何其他文字说明。`;
     
     return prompt;
 }
