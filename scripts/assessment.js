@@ -1,6 +1,6 @@
 // 测评问卷JavaScript
 
-// 问题数据（从test.txt提取的35道题）
+// 问题数据（从test.txt提取的45道题：35道评分题 + 10道信息题）
 const questions = [
     { id: 1, text: "你很清晰地知道，如何突破你当下业务的10倍的营收规模", type: "scale" },
     { id: 2, text: "你清楚目标客户常出现的地方，并且有策略出现在那里吸引到他们", type: "scale" },
