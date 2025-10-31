@@ -700,6 +700,215 @@
     border-color: #667eea;
 }
 
+/* 测评师介绍区域 */
+.consultant-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 60px 0;
+    margin-top: 60px;
+}
+
+.consultant-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 32px;
+    color: white;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+.consultant-card {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+}
+
+.consultant-info {
+    display: flex;
+    gap: 30px;
+}
+
+.consultant-avatar {
+    flex-shrink: 0;
+}
+
+.consultant-avatar img {
+    width: 180px;
+    height: 180px;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-icon {
+    font-size: 80px;
+}
+
+.consultant-details {
+    flex: 1;
+}
+
+.consultant-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.consultant-title {
+    font-size: 18px;
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.consultant-credentials {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.credential-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.credential-icon {
+    font-size: 18px;
+}
+
+.consultant-stats {
+    display: flex;
+    gap: 40px;
+    margin: 25px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+    border-radius: 12px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #718096;
+    margin-top: 5px;
+}
+
+.consultant-desc {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #4a5568;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f7fafc;
+    border-left: 4px solid #667eea;
+    border-radius: 8px;
+}
+
+.consultant-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.consultant-tags .tag {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.consultant-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
+    border-radius: 16px;
+}
+
+.contact-qrcode {
+    text-align: center;
+}
+
+.contact-qrcode img {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.qrcode-tip {
+    font-size: 14px;
+    color: #4a5568;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.contact-cta {
+    text-align: center;
+    width: 100%;
+}
+
+.cta-highlight {
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.cta-text {
+    font-size: 15px;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.cta-text strong {
+    color: #e53e3e;
+    font-size: 18px;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
     .header-content {
@@ -748,6 +957,60 @@
     .unlock-bar-content .btn {
         width: 100%;
     }
+
+    /* 测评师介绍移动端优化 */
+    .consultant-section {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+
+    .consultant-card {
+        grid-template-columns: 1fr;
+        padding: 25px 20px;
+        gap: 30px;
+    }
+
+    .consultant-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .consultant-avatar img,
+    .avatar-placeholder {
+        width: 140px;
+        height: 140px;
+    }
+
+    .consultant-name {
+        font-size: 24px;
+    }
+
+    .consultant-credentials {
+        grid-template-columns: 1fr;
+    }
+
+    .consultant-stats {
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 28px;
+    }
+
+    .consultant-desc {
+        font-size: 14px;
+    }
+
+    .contact-qrcode img {
+        width: 180px;
+        height: 180px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -761,5 +1024,34 @@
 
     .price-amount {
         font-size: 36px;
+    }
+
+    /* 测评师介绍小屏优化 */
+    .consultant-card {
+        padding: 20px 15px;
+    }
+
+    .consultant-avatar img,
+    .avatar-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+
+    .consultant-name {
+        font-size: 22px;
+    }
+
+    .consultant-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .contact-qrcode img {
+        width: 160px;
+        height: 160px;
+    }
+
+    .cta-text {
+        font-size: 14px;
     }
 }
