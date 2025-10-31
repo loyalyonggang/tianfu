@@ -194,13 +194,9 @@
             </div>
 
             <div class="payment-methods">
-                <button class="payment-btn wechat" onclick="selectPaymentMethod('wechat')">
-                    <span class="payment-icon">💚</span>
-                    <span>微信支付</span>
-                </button>
-                <button class="payment-btn alipay" onclick="selectPaymentMethod('alipay')">
+                <button class="payment-btn alipay" onclick="selectPaymentMethod('alipay')" style="width: 100%;">
                     <span class="payment-icon">💙</span>
-                    <span>支付宝</span>
+                    <span>支付宝支付</span>
                 </button>
             </div>
 
@@ -270,6 +266,8 @@
         </div>
     </div>
 
+    <!-- QRCode.js library for generating QR codes -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="scripts/report-generated.js"></script>
 </body>
 </html>

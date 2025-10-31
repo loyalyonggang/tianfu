@@ -1,5 +1,10 @@
 // 个性化报告页面JavaScript
 
+// 支付API配置 - 自动检测环境
+const PAYMENT_API_BASE = window.location.hostname === 'localhost' 
+    ? 'http://localhost:3000' 
+    : window.location.origin;
+
 // API配置 - 使用DeepSeek V3.1免费模型
 const OPENAI_CONFIG = {
     // 直接调用（DeepSeek支持CORS，无需后端代理）
@@ -479,20 +484,140 @@ function closePaymentModal() {
 }
 
 // 选择支付方式
-function selectPaymentMethod(method) {
+async function selectPaymentMethod(method) {
     closePaymentModal();
     
-    const methodNames = {
-        'wechat': '微信',
-        'alipay': '支付宝'
-    };
+    if (method === 'alipay') {
+        // 支付宝支付
+        document.getElementById('paymentMethodTitle').textContent = '支付宝支付';
+        document.getElementById('paymentMethodName').textContent = '支付宝';
+        document.getElementById('qrcodeModal').style.display = 'flex';
+        
+        // 生成支付宝二维码
+        await generateAlipayQRCode();
+    } else {
+        alert('暂时只支持支付宝支付');
+    }
+}
+
+// 生成支付宝支付二维码
+async function generateAlipayQRCode() {
+    try {
+        const reportId = document.getElementById('reportId').textContent;
+        
+        // 显示加载状态
+        document.getElementById('qrcodePlaceholder').innerHTML = `
+            <p>正在生成支付二维码...</p>
+            <div class="spinner"></div>
+        `;
+        
+        // 调用后端API创建订单
+        const response = await fetch(`${PAYMENT_API_BASE}/api/payment/alipay/create`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                reportId: reportId,
+                amount: 99,
+                subject: '商业诊断报告'
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // 显示二维码
+            displayQRCode(data.qrCode, data.outTradeNo);
+            
+            // 开始轮询支付状态
+            startPaymentPolling(data.outTradeNo);
+        } else {
+            throw new Error(data.message || '创建订单失败');
+        }
+        
+    } catch (error) {
+        console.error('生成支付二维码失败:', error);
+        document.getElementById('qrcodePlaceholder').innerHTML = `
+            <p style="color: red;">生成二维码失败</p>
+            <p>${error.message}</p>
+            <button class="btn btn-primary" onclick="generateAlipayQRCode()">重试</button>
+        `;
+    }
+}
+
+// 显示二维码
+function displayQRCode(qrCodeUrl, outTradeNo) {
+    // 使用QRCode.js生成二维码图片
+    const qrContainer = document.getElementById('qrcodePlaceholder');
+    qrContainer.innerHTML = `
+        <p>请使用支付宝扫描二维码支付</p>
+        <div id="qrcode" style="margin: 20px auto;"></div>
+        <p style="font-size: 12px; color: #999;">订单号: ${outTradeNo}</p>
+    `;
     
-    document.getElementById('paymentMethodTitle').textContent = methodNames[method] + '支付';
-    document.getElementById('paymentMethodName').textContent = methodNames[method];
-    document.getElementById('qrcodeModal').style.display = 'flex';
+    // 如果有QRCode库，使用库生成
+    if (typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById('qrcode'), {
+            text: qrCodeUrl,
+            width: 250,
+            height: 250
+        });
+    } else {
+        // 否则使用在线API生成
+        document.getElementById('qrcode').innerHTML = `
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeUrl)}" 
+                 alt="支付二维码" style="width: 250px; height: 250px;">
+        `;
+    }
+}
+
+// 轮询支付状态
+let paymentPollingInterval = null;
+function startPaymentPolling(outTradeNo) {
+    // 清除之前的轮询
+    if (paymentPollingInterval) {
+        clearInterval(paymentPollingInterval);
+    }
     
-    // 实际使用时，这里应该调用后端API生成支付二维码
-    // generatePaymentQRCode(method);
+    // 每2秒查询一次支付状态
+    paymentPollingInterval = setInterval(async () => {
+        try {
+            const response = await fetch(`${PAYMENT_API_BASE}/api/payment/alipay/query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    outTradeNo: outTradeNo
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && (data.tradeStatus === 'TRADE_SUCCESS' || data.tradeStatus === 'TRADE_FINISHED')) {
+                // 支付成功
+                clearInterval(paymentPollingInterval);
+                handlePaymentSuccess();
+            }
+        } catch (error) {
+            console.error('查询支付状态失败:', error);
+        }
+    }, 2000);
+    
+    // 30分钟后停止轮询
+    setTimeout(() => {
+        if (paymentPollingInterval) {
+            clearInterval(paymentPollingInterval);
+        }
+    }, 30 * 60 * 1000);
+}
+
+// 处理支付成功
+function handlePaymentSuccess() {
+    closeQrcodeModal();
+    alert('🎉 支付成功！正在解锁完整报告...');
+    unlockReport();
 }
 
 // 关闭二维码弹窗

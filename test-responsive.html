@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>响应式测试 - 天赋财富测评系统</title>
+    <title>支付宝支付功能测试 - 天赋财富测评系统</title>
     <style>
         * {
             margin: 0;
@@ -156,87 +156,389 @@
                 font-size: 18px;
             }
         }
+
+        /* 测试按钮样式 */
+        .test-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .test-btn:active {
+            transform: translateY(0);
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e6f7ff;
+            border-left: 4px solid #1677ff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .result-box.error {
+            background: #fff2e8;
+            border-left-color: #ff4d4f;
+            color: #d32f2f;
+        }
+
+        .result-box.success {
+            background: #f6ffed;
+            border-left-color: #52c41a;
+            color: #2e7d32;
+        }
+
+        .qrcode-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .status-text {
+            text-align: center;
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 响应式测试页面</h1>
-
-        <div class="screen-size" id="screenSize">
-            正在检测屏幕尺寸...
-        </div>
+        <h1>🧪 支付宝支付功能测试</h1>
 
         <div class="info-box">
-            <h2>✅ 移动端优化已完成</h2>
-            <p>所有页面已针对移动端进行深度优化，支持以下断点：</p>
-            <div class="device-info">
-                <div class="device-card">
-                    <h3>🖥️ 桌面端</h3>
-                    <p>> 1024px<br>完整布局</p>
-                </div>
-                <div class="device-card">
-                    <h3>📱 平板</h3>
-                    <p>768px - 1024px<br>2列布局</p>
-                </div>
-                <div class="device-card">
-                    <h3>📱 手机</h3>
-                    <p>480px - 768px<br>单列布局</p>
-                </div>
-                <div class="device-card">
-                    <h3>📱 小屏手机</h3>
-                    <p>< 480px<br>紧凑布局</p>
-                </div>
-            </div>
+            <h2>📋 测试说明</h2>
+            <p>✅ 后端服务器运行在: <strong>http://localhost:3000</strong></p>
+            <p>✅ 支付宝SDK已集成</p>
+            <p>✅ 三个支付API端点已就绪</p>
+            <p style="margin-top: 15px;">⚠️ <strong>注意:</strong>测试前请确保支付宝配置正确（App ID、私钥、公钥）</p>
         </div>
 
-        <div class="links">
-            <div class="link-card">
-                <a href="index.html">🏠 首页</a>
-                <p>查看首页在当前设备的显示效果</p>
-            </div>
-            <div class="link-card">
-                <a href="talent-creativity.html">💡 天赋创富测评</a>
-                <p>查看测评报告的移动端适配</p>
-            </div>
-            <div class="link-card">
-                <a href="business-assessment.html">📊 商业测评</a>
-                <p>查看商业报告的响应式布局</p>
-            </div>
+        <!-- 测试1: 服务器健康检查 -->
+        <div class="test-section">
+            <h3>1️⃣ 服务器健康检查</h3>
+            <p style="color: #666; margin-bottom: 15px;">测试后端服务器是否正常运行</p>
+            <button class="test-btn" onclick="testHealth()">🔍 测试服务器连接</button>
+            <div id="healthResult"></div>
         </div>
 
+        <!-- 测试2: 创建支付订单 -->
+        <div class="test-section">
+            <h3>2️⃣ 创建支付订单</h3>
+            <p style="color: #666; margin-bottom: 15px;">调用支付宝API创建订单并生成二维码</p>
+            <button class="test-btn" onclick="testCreateOrder()">💳 生成支付二维码 (¥0.01测试)</button>
+            <div id="orderResult"></div>
+            <div id="qrcodeDisplay" class="qrcode-container" style="display: none;"></div>
+            <div id="orderStatus" class="status-text"></div>
+        </div>
+
+        <!-- 测试3: 查询支付状态 -->
+        <div class="test-section">
+            <h3>3️⃣ 查询支付状态</h3>
+            <p style="color: #666; margin-bottom: 15px;">输入订单号查询支付状态</p>
+            <div class="input-group">
+                <input type="text" id="tradeNoInput" placeholder="输入订单号（例如：RPT1730000000abc123）">
+            </div>
+            <button class="test-btn" onclick="testQueryOrder()">🔍 查询订单状态</button>
+            <div id="queryResult"></div>
+        </div>
+
+        <!-- 快速导航 -->
         <div class="info-box" style="margin-top: 30px; background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
-            <h2>🎯 测试建议</h2>
-            <p><strong>浏览器测试：</strong></p>
-            <p>1. 按 F12 打开开发者工具</p>
-            <p>2. 按 Ctrl+Shift+M 切换设备模式</p>
-            <p>3. 选择不同设备查看效果</p>
-            <p style="margin-top: 15px;"><strong>真机测试：</strong></p>
-            <p>在手机浏览器中访问当前网址</p>
+            <h2>🔗 快速导航</h2>
+            <div class="links">
+                <div class="link-card" style="background: rgba(255,255,255,0.2);">
+                    <a href="index.html">🏠 返回首页</a>
+                    <p>查看完整应用</p>
+                </div>
+                <div class="link-card" style="background: rgba(255,255,255,0.2);">
+                    <a href="report-generated.html">📊 查看报告页</a>
+                    <p>测试实际支付流程</p>
+                </div>
+                <div class="link-card" style="background: rgba(255,255,255,0.2);">
+                    <a href="assessment.html">📝 开始测评</a>
+                    <p>完整体验流程</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 配置检查清单 -->
+        <div class="test-section">
+            <h3>📝 配置检查清单</h3>
+            <div style="background: white; padding: 15px; border-radius: 6px; margin-top: 10px;">
+                <p style="margin: 8px 0;">☐ 服务器已启动 (npm start)</p>
+                <p style="margin: 8px 0;">☐ 支付宝App ID已配置</p>
+                <p style="margin: 8px 0;">☐ 应用私钥已配置</p>
+                <p style="margin: 8px 0;">☐ 支付宝公钥已配置</p>
+                <p style="margin: 8px 0;">☐ 网关地址已设置（生产/沙箱）</p>
+                <p style="margin: 8px 0;">☐ 支付宝开放平台已开通"当面付"功能</p>
+            </div>
         </div>
     </div>
 
+    <!-- QRCode.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
     <script>
-        function updateScreenSize() {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            let deviceType = '';
+        let currentOrderNo = '';
+        let pollingInterval = null;
+
+        // 测试1：服务器健康检查
+        async function testHealth() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = '<div class="result-box">⏳ 正在测试服务器连接...</div>';
             
-            if (width > 1024) {
-                deviceType = '🖥️ 桌面端';
-            } else if (width > 768) {
-                deviceType = '📱 平板';
-            } else if (width > 480) {
-                deviceType = '📱 手机';
-            } else {
-                deviceType = '📱 小屏手机';
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `<div class="result-box success">✅ 服务器连接成功！
+
+状态: ${data.status}
+时间: ${data.timestamp}
+服务器: http://localhost:3000</div>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-box error">❌ 服务器连接失败！
+
+错误信息: ${error.message}
+
+请检查：
+1. 服务器是否已启动 (npm start)
+2. 端口3000是否被占用
+3. 防火墙设置</div>`;
             }
-            
-            document.getElementById('screenSize').textContent = 
-                `${deviceType} | 宽度: ${width}px | 高度: ${height}px`;
         }
 
-        updateScreenSize();
-        window.addEventListener('resize', updateScreenSize);
+        // 测试2：创建支付订单
+        async function testCreateOrder() {
+            const resultDiv = document.getElementById('orderResult');
+            const qrcodeDiv = document.getElementById('qrcodeDisplay');
+            const statusDiv = document.getElementById('orderStatus');
+            
+            resultDiv.innerHTML = '<div class="result-box">⏳ 正在创建支付订单...</div>';
+            qrcodeDiv.style.display = 'none';
+            qrcodeDiv.innerHTML = '';
+            statusDiv.innerHTML = '';
+            
+            if (pollingInterval) clearInterval(pollingInterval);
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/payment/alipay/create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        reportId: 'TEST' + Date.now(),
+                        amount: 0.01,
+                        subject: '支付功能测试订单'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('支付宝返回数据:', data);
+                
+                if (data.success) {
+                    currentOrderNo = data.outTradeNo;
+                    document.getElementById('tradeNoInput').value = currentOrderNo;
+                    
+                    resultDiv.innerHTML = `<div class="result-box success">✅ 订单创建成功！
+
+订单号: ${data.outTradeNo}
+支付金额: ¥${data.amount}
+二维码URL: ${data.qrCode}</div>`;
+                    
+                    qrcodeDiv.style.display = 'block';
+                    qrcodeDiv.innerHTML = '<div id="qrcodeImage"></div><p style="margin-top: 10px; color: #666;">请使用支付宝扫描上方二维码支付</p>';
+                    
+                    new QRCode(document.getElementById('qrcodeImage'), {
+                        text: data.qrCode,
+                        width: 256,
+                        height: 256
+                    });
+                    
+                    startPolling(data.outTradeNo);
+                } else {
+                    throw new Error(data.message || data.error || '创建订单失败');
+                }
+            } catch (error) {
+                console.error('创建订单错误:', error);
+                resultDiv.innerHTML = `<div class="result-box error">❌ 创建订单失败！
+
+错误信息: ${error.message}
+
+可能的原因：
+1. 支付宝配置错误（检查 alipay-config.js）
+   - App ID是否正确
+   - 私钥格式是否正确
+   - 公钥是否匹配
+2. 网络连接问题
+3. 支付宝开放平台未开通"当面付"功能
+4. 使用了沙箱环境但配置了生产密钥（或相反）
+
+建议：
+- 查看浏览器控制台获取详细错误
+- 查看服务器终端日志
+- 访问 https://open.alipay.com/ 验证配置</div>`;
+            }
+        }
+
+        // 测试3：查询支付状态
+        async function testQueryOrder() {
+            const tradeNo = document.getElementById('tradeNoInput').value.trim();
+            const resultDiv = document.getElementById('queryResult');
+            
+            if (!tradeNo) {
+                resultDiv.innerHTML = '<div class="result-box error">❌ 请输入订单号</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<div class="result-box">⏳ 正在查询订单状态...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/payment/alipay/query', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({outTradeNo: tradeNo})
+                });
+                
+                const data = await response.json();
+                console.log('查询结果:', data);
+                
+                if (data.success) {
+                    const statusMap = {
+                        'WAIT_BUYER_PAY': '⏳ 等待买家付款',
+                        'TRADE_SUCCESS': '✅ 交易成功',
+                        'TRADE_FINISHED': '✅ 交易完成',
+                        'TRADE_CLOSED': '❌ 交易关闭'
+                    };
+                    
+                    const statusText = statusMap[data.tradeStatus] || data.tradeStatus;
+                    const isSuccess = data.tradeStatus === 'TRADE_SUCCESS' || data.tradeStatus === 'TRADE_FINISHED';
+                    
+                    resultDiv.innerHTML = `<div class="result-box ${isSuccess ? 'success' : ''}">${statusText}
+
+订单号: ${tradeNo}
+支付状态: ${data.tradeStatus}
+支付金额: ¥${data.totalAmount || '未知'}</div>`;
+                    
+                    if (isSuccess && pollingInterval) clearInterval(pollingInterval);
+                } else {
+                    throw new Error(data.message || data.error || '查询失败');
+                }
+            } catch (error) {
+                console.error('查询错误:', error);
+                resultDiv.innerHTML = `<div class="result-box error">❌ 查询失败！
+
+错误信息: ${error.message}
+
+可能的原因：
+1. 订单号不存在
+2. 订单尚未创建
+3. 支付宝API调用失败</div>`;
+            }
+        }
+
+        // 自动轮询支付状态
+        function startPolling(outTradeNo) {
+            const statusDiv = document.getElementById('orderStatus');
+            let count = 0;
+            
+            statusDiv.innerHTML = '🔄 正在监听支付状态...';
+            
+            pollingInterval = setInterval(async () => {
+                count++;
+                statusDiv.innerHTML = `🔄 正在监听支付状态... (已等待 ${count * 2} 秒)`;
+                
+                try {
+                    const response = await fetch('http://localhost:3000/api/payment/alipay/query', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({outTradeNo: outTradeNo})
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && (data.tradeStatus === 'TRADE_SUCCESS' || data.tradeStatus === 'TRADE_FINISHED')) {
+                        clearInterval(pollingInterval);
+                        statusDiv.innerHTML = '🎉 支付成功！订单已完成';
+                        alert('🎉 支付成功！\n\n订单号: ' + outTradeNo + '\n金额: ¥' + data.totalAmount);
+                        document.getElementById('tradeNoInput').value = outTradeNo;
+                        testQueryOrder();
+                    }
+                } catch (error) {
+                    console.error('轮询错误:', error);
+                }
+            }, 2000);
+            
+            setTimeout(() => {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    statusDiv.innerHTML = '⏱️ 轮询已超时（5分钟），请手动查询订单状态';
+                }
+            }, 5 * 60 * 1000);
+        }
+
+        // 页面加载时自动测试服务器
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🧪 支付功能测试页面已加载');
+            console.log('📍 服务器地址: http://localhost:3000');
+            testHealth();
+        });
+
+        // 页面卸载时清除轮询
+        window.addEventListener('beforeunload', () => {
+            if (pollingInterval) clearInterval(pollingInterval);
+        });
     </script>
 </body>
 </html>
