@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真我天赋创富测评 - 测评报告</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/report.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="report-container">
+        <header class="report-header">
+            <div class="header-left">
+                <div class="logo">真我</div>
+                <span class="brand-name">真我文化</span>
+            </div>
+            <div class="header-right">
+                <div class="qr-code">
+                    <div class="qr-placeholder"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="report-title">
+            <h1>真我天赋创富测评</h1>
+        </div>
+
+        <div class="report-info">
+            <div class="info-left">
+                <span class="label">姓名：</span>
+                <span class="value">君君</span>
+            </div>
+            <div class="info-right">
+                <span class="label">日期：</span>
+                <span class="value">2025/09/23</span>
+            </div>
+        </div>
+
+        <section class="score-section">
+            <h2 class="section-title">天赋创富力得分</h2>
+            <div class="score-display">
+                <div class="lightbulb-icon">
+                    <svg viewBox="0 0 100 100" width="120" height="120">
+                        <circle cx="50" cy="40" r="20" fill="none" stroke="#5B9BFF" stroke-width="4"/>
+                        <path d="M 50 60 L 50 70" stroke="#5B9BFF" stroke-width="4"/>
+                        <path d="M 45 70 L 55 70" stroke="#5B9BFF" stroke-width="4"/>
+                        <path d="M 45 75 L 55 75" stroke="#5B9BFF" stroke-width="4"/>
+                        <path d="M 47 75 L 47 80 L 53 80 L 53 75" stroke="#5B9BFF" stroke-width="3" fill="none"/>
+                    </svg>
+                </div>
+                <div class="score-badge">优秀</div>
+            </div>
+        </section>
+
+        <section class="charts-section">
+            <div class="chart-row">
+                <div class="chart-container half-width">
+                    <h3 class="chart-title">天赋力</h3>
+                    <canvas id="talentChart"></canvas>
+                </div>
+                <div class="chart-container half-width">
+                    <h3 class="chart-title">创富力</h3>
+                    <canvas id="wealthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section class="talent-types-section">
+            <h2 class="section-title">天赋类型</h2>
+            <div class="talent-types">
+                <div class="talent-badge primary">
+                    <span class="badge-icon">⚙️</span>
+                    <span class="badge-text">配速作家</span>
+                </div>
+                <div class="talent-badge">
+                    <img src="https://via.placeholder.com/60" alt="avatar" class="talent-avatar">
+                </div>
+                <div class="talent-badge primary">
+                    <span class="badge-icon">🌟</span>
+                    <span class="badge-text">梦想催化师</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="analysis-section">
+            <div class="analysis-row">
+                <div class="analysis-container half-width">
+                    <h3 class="chart-title">兴趣领域</h3>
+                    <canvas id="interestChart"></canvas>
+                </div>
+                <div class="analysis-container half-width">
+                    <h3 class="chart-title">交互方式</h3>
+                    <canvas id="interactionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <footer class="report-footer">
+            <a href="index.html" class="btn-back">返回首页</a>
+        </footer>
+    </div>
+
+    <script src="scripts/talent-creativity.js"></script>
+</body>
+</html>

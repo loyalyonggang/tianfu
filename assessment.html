@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商业诊断测评 - 真我文化</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/assessment.css">
+</head>
+<body>
+    <div class="assessment-container">
+        <!-- 进度条 -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+
+        <!-- 测评介绍页 -->
+        <div class="assessment-intro" id="introPage">
+            <div class="intro-content">
+                <div class="intro-icon">🎯</div>
+                <h1>知识IP低粉高变现商业诊断测评</h1>
+                <p class="intro-desc">
+                    欢迎你参与本次商业诊断测评！这份商业诊断报告已迭代5次，新版本上线1个月内已累计帮助超过<strong>100+人</strong>，
+                    诊断他们在知识IP线上变现过程中遇到的商业问题，其中包含商业模式、经营情况、个人发展状态等。
+                </p>
+                <p class="intro-desc">
+                    测评运用心理学和统计学原理做出诊断分析，精准率约<strong>94%-98%</strong>。
+                    题目设计基于每位知识IP的实践过程，为测评者的当下商业发展提供了科学依据。
+                </p>
+
+                <div class="intro-info">
+                    <div class="info-item">
+                        <span class="info-icon">⏱️</span>
+                        <span class="info-text">测评时间：3-5 分钟</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">📊</span>
+                        <span class="info-text">题目数量：35 道题</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-icon">🎯</span>
+                        <span class="info-text">精准率：94%-98%</span>
+                    </div>
+                </div>
+
+                <div class="intro-tips">
+                    <h3>📋 测评前须知：</h3>
+                    <ul>
+                        <li>选择安静环境，以平常心作答</li>
+                        <li>本测评没有标准答案，请完全根据你当前的创业或副业状态和直觉作答</li>
+                        <li>测评过程中请避免与他人交谈或接听电话</li>
+                        <li>每个问题提供五个强弱选项：非常符合、比较符合、难以判断、不太符合、非常不符合</li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-primary btn-large" onclick="startAssessment()">
+                    🚀 开始测评
+                </button>
+            </div>
+        </div>
+
+        <!-- 测评问题页 -->
+        <div class="assessment-questions" id="questionsPage" style="display: none;">
+            <div class="question-container" id="questionContainer">
+                <!-- 问题将通过JavaScript动态生成 -->
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">
+                    ← 上一题
+                </button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">
+                    下一题 →
+                </button>
+                <button class="btn btn-primary btn-large" id="submitBtn" onclick="submitAssessment()" style="display: none;">
+                    提交测评 ✓
+                </button>
+            </div>
+        </div>
+
+        <!-- 加载页 -->
+        <div class="loading-page" id="loadingPage" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h2>正在生成你的专属报告...</h2>
+                <p class="loading-text" id="loadingText">分析中...</p>
+                <div class="loading-steps">
+                    <div class="step-item active">✓ 数据收集完成</div>
+                    <div class="step-item">⏳ 多维度分析中</div>
+                    <div class="step-item">⏳ 生成可视化报告</div>
+                    <div class="step-item">⏳ 准备个性化建议</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/assessment.js"></script>
+</body>
+</html>

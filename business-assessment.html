@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1V1低粉高变现商业测评 - 测评报告</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/business-report.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="business-report-wrapper">
+        <div class="purple-header">
+            <div class="header-content">
+                <h2 class="promo-title">3分钟，拥有专属商业破局地图</h2>
+                <p class="promo-subtitle">免费获得 <span class="highlight">1对1</span><span class="orange-text">线上变现测评及解读</span></p>
+                <div class="value-section">
+                    <span class="value-label">价值</span>
+                    <span class="value-amount">1980元</span>
+                    <span class="value-limit">每天限额 <span class="limit-number">1</span> 人</span>
+                    <span class="scan-text">扫码领取👉</span>
+                </div>
+                <div class="header-qr">
+                    <div class="qr-placeholder"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-content">
+            <div class="report-header-info">
+                <div class="report-title-section">
+                    <h1 class="main-title">夏天 <span class="hot-badge">独家</span></h1>
+                    <h2 class="sub-title">1V1低粉高变现商业测评</h2>
+                </div>
+                <div class="report-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">昵称：</span>
+                        <span class="meta-value">夏天</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">性别：</span>
+                        <span class="meta-value">女</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">行业：</span>
+                        <span class="meta-value">自媒体</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">日期：</span>
+                        <span class="meta-value">2025.9.11</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="assessment-grid">
+                <!-- A: 存在感 -->
+                <div class="assessment-card card-a">
+                    <div class="card-header">
+                        <span class="card-label">A</span>
+                        <h3>存在感</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="presenceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- B: 引力场 -->
+                <div class="assessment-card card-b">
+                    <div class="card-header">
+                        <span class="card-label">B</span>
+                        <h3>引力场</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="attractionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- C: 说服力 -->
+                <div class="assessment-card card-c">
+                    <div class="card-header">
+                        <span class="card-label">C</span>
+                        <h3>说服力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="persuasionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- D: 价值力 -->
+                <div class="assessment-card card-d">
+                    <div class="card-header">
+                        <span class="card-label">D</span>
+                        <h3>价值力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="valueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- E: 兑现力 -->
+                <div class="assessment-card card-e">
+                    <div class="card-header">
+                        <span class="card-label">E</span>
+                        <h3>兑现力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="deliveryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- F: 续航力 -->
+                <div class="assessment-card card-f">
+                    <div class="card-header">
+                        <span class="card-label">F</span>
+                        <h3>续航力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="enduranceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- G: 杠杆力 -->
+                <div class="assessment-card card-g">
+                    <div class="card-header">
+                        <span class="card-label">G</span>
+                        <h3>杠杆力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="leverageChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- H: 合力 -->
+                <div class="assessment-card card-h">
+                    <div class="card-header">
+                        <span class="card-label">H</span>
+                        <h3>合力</h3>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="synergyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="business-footer">
+            <a href="index.html" class="btn-back">返回首页</a>
+        </footer>
+    </div>
+
+    <script src="scripts/business-assessment.js"></script>
+</body>
+</html>
